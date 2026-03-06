@@ -9,7 +9,7 @@ info "Initializing Network Bridges..."
 setup_bridge() {
     local bridge="$1"
     if ip link show "$bridge" > /dev/null 2>&1; then
-        warn "Bridge $bridge already exists. Skipping..."
+        info "Bridge $bridge already exists. Skipping..."
     else
         info "Creating bridge $bridge..."
         sudo ip link add "$bridge" type bridge || error "Failed to create $bridge"

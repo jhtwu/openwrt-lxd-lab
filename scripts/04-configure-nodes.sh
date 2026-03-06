@@ -47,12 +47,12 @@ uci commit firewall
 " || error "Failed to configure OpenWrt"
 
 info "Configuring WAN Host ($CTR_WAN_HOST)..."
-lxc exec "$CTR_WAN_HOST" -- ip addr add "$WAN_IP_HOST/24" dev "$CIF_WAN"
+lxc exec "$CTR_WAN_HOST" -- ip addr replace "$WAN_IP_HOST/24" dev "$CIF_WAN"
 lxc exec "$CTR_WAN_HOST" -- ip link set "$CIF_WAN" up
 
 info "Configuring LAN Host ($CTR_LAN_HOST)..."
-lxc exec "$CTR_LAN_HOST" -- ip addr add "$LAN_IP_HOST/24" dev "$CIF_LAN"
+lxc exec "$CTR_LAN_HOST" -- ip addr replace "$LAN_IP_HOST/24" dev "$CIF_LAN"
 lxc exec "$CTR_LAN_HOST" -- ip link set "$CIF_LAN" up
-lxc exec "$CTR_LAN_HOST" -- ip route add default via "$LAN_IP_ROUTER"
+lxc exec "$CTR_LAN_HOST" -- ip route replace default via "$LAN_IP_ROUTER"
 
 print_status "Configuration" "APPLIED"

@@ -66,10 +66,9 @@ fi
 # 4. 路由路徑追蹤
 echo -e "\n${BLUE}[Diagnostic: Traceroute Mapping]${NC}"
 lxc exec "$CTR_LAN_HOST" -- traceroute -n -m 5 "$WAN_IP_HOST" 2>/dev/null | tail -n +2 | while read -r line; do
-    hop=$(echo "$line" | awk '{print $1}')
-    ip=$(echo "$line" | awk '{print $2}')
-    time=$(echo "$line" | awk '{print $4}')
-    echo -e "  Hop $hop: ${GREEN}$ip${NC} ($time ms)"
+    if [ -n "$line" ]; then
+        echo -e "  Hop: ${GREEN}$line${NC}"
+    fi
 done
 
 
