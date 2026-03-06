@@ -19,7 +19,7 @@ jobs:
 
       - name: Lint Scripts
         run: |
-          shellcheck scripts/*.sh
+          shellcheck -x -e SC1091 scripts/*.sh
 
       - name: Setup LXD
         uses: canonical/setup-lxd@v1

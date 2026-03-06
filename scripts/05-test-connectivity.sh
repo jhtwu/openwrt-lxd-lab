@@ -72,6 +72,7 @@ lxc exec "$CTR_LAN_HOST" -- traceroute -n -m 5 "$WAN_IP_HOST" 2>/dev/null | tail
     echo -e "  Hop $hop: ${GREEN}$ip${NC} ($time ms)"
 done
 
+
 info "=========================================================="
 info "   ✅ All functional tests finished.                      "
 info "=========================================================="
