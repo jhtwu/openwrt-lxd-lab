@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenWrt LXD Lab | 自動化網路測試環境</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .topology-box { background: #1a202c; color: #48bb78; font-family: monospace; }
+        .status-badge { transition: transform 0.3s; }
+        .status-badge:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <!-- Hero Section -->
+    <header class="bg-slate-900 text-white py-16 shadow-lg">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-5xl font-extrabold mb-4">OpenWrt LXD Test Lab</h1>
+            <p class="text-xl text-blue-300 mb-8">自動化、標準化、視覺化的在地化路由器測試系統</p>
+            <div class="flex justify-center space-x-4">
+                <a href="https://github.com/jhtwu/openwrt-lxd-lab" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold">
+                    <i class="fab fa-github mr-2"></i> GitHub Repository
+                </a>
+                <div class="status-badge flex items-center">
+                    <img src="https://github.com/jhtwu/openwrt-lxd-lab/actions/workflows/ci.yml/badge.svg" alt="Build Status" class="rounded">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-12">
+        
+        <!-- Features -->
+        <div class="grid md:grid-cols-3 gap-8 mb-16">
+            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-blue-500">
+                <i class="fas fa-microchip text-3xl text-blue-500 mb-4"></i>
+                <h3 class="text-xl font-bold mb-2">LXD 輕量化</h3>
+                <p class="text-gray-600">利用 Linux 容器技術，秒級啟動 OpenWrt 與測試節點，資源佔用極低。</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-green-500">
+                <i class="fas fa-network-wired text-3xl text-green-500 mb-4"></i>
+                <h3 class="text-xl font-bold mb-2">真實拓撲模擬</h3>
+                <p class="text-gray-600">模擬 WAN/LAN 隔離環境，支援 NAT、防火牆與路由轉發實測。</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-purple-500">
+                <i class="fas fa-vial text-3xl text-purple-500 mb-4"></i>
+                <h3 class="text-xl font-bold mb-2">CI/CD 整合</h3>
+                <p class="text-gray-600">整合 GitHub Actions，每次 Commit 自動進行 ShellCheck 與功能連通性測試。</p>
+            </div>
+        </div>
+
+        <!-- Topology Section -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-6 text-center">網路拓撲圖 (Topology)</h2>
+            <div class="topology-box p-8 rounded-lg shadow-inner overflow-x-auto text-sm leading-relaxed">
+<pre>
+[wan-host: 10.0.0.2] <--- (br-wan) ---> [openwrt: 10.0.0.1 | 192.168.1.1] <--- (br-lan) ---> [lan-host: 192.168.1.10]
+</pre>
+            </div>
+        </section>
+
+        <!-- CI/CD Process -->
+        <section class="bg-white p-8 rounded-xl shadow-md mb-16">
+            <h2 class="text-3xl font-bold mb-8">自動化流水線 (CI/CD Pipeline)</h2>
+            <div class="space-y-6">
+                <div class="flex items-start">
+                    <div class="bg-blue-100 text-blue-600 rounded-full p-2 mr-4 mt-1"><i class="fas fa-check"></i></div>
+                    <div>
+                        <h4 class="font-bold text-lg text-blue-800">1. 靜態語法檢查 (Lint)</h4>
+                        <p class="text-gray-600">使用 ShellCheck 確保所有自動化腳本符合標準規範，無語法隱患。</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-green-100 text-green-600 rounded-full p-2 mr-4 mt-1"><i class="fas fa-check"></i></div>
+                    <div>
+                        <h4 class="font-bold text-lg text-green-800">2. 虛擬環境佈建</h4>
+                        <p class="text-gray-600">在 GitHub Runner 中自動配置 LXD 服務，並建立隔離網橋。</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <div class="bg-purple-100 text-purple-600 rounded-full p-2 mr-4 mt-1"><i class="fas fa-check"></i></div>
+                    <div>
+                        <h4 class="font-bold text-lg text-purple-800">3. 連通性實測</h4>
+                        <p class="text-gray-600">執行跨區段 Ping 測試與 Traceroute 追蹤，確保 Routing 與 NAT 運作正常。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Start -->
+        <div class="bg-slate-800 text-white p-8 rounded-xl shadow-xl">
+            <h2 class="text-2xl font-bold mb-4">快速部署</h2>
+            <code class="block bg-black p-4 rounded text-blue-400 mb-4">git clone git@github.com:jhtwu/openwrt-lxd-lab.git<br>sudo make all</code>
+            <p class="text-gray-400 text-sm">此指令將自動完成網橋建立、容器部署與連通性測試。</p>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-100 py-8 border-t">
+        <div class="container mx-auto px-6 text-center text-gray-500 text-sm">
+            <p>© 2026 OpenWrt LXD Lab Project. 由 AI 協作開發與部署。</p>
+        </div>
+    </footer>
+
+</body>
+</html>
