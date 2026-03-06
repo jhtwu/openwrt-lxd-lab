@@ -17,7 +17,8 @@ sudo make test    # 執行所有測試
 sudo make clean   # 清除環境
 ```
 
-## 🏗 目錄架構
+---
+*🛡️ 已透過 SSH 密鑰自動化驗證部署。*
 
 - `/config`: 環境變數與關鍵參數 (`env.conf`)。
 - `/docs`: 詳細的架構說明文件與拓撲圖。
