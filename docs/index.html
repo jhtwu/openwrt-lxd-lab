@@ -232,16 +232,24 @@
                 <div class="relative">
                     <div class="cleanup-line"></div>
                     <svg viewBox="0 0 800 280" class="w-full h-auto">
-                        <!-- Stage 1 -->
+                        <!-- Stage 1: Bridges -->
                         <g class="st-br">
                             <rect x="150" y="130" width="200" height="15" rx="7" fill="#2d3748" stroke="#4a5568" />
+                            <text x="250" y="142" text-anchor="middle" fill="#718096" style="font-size:9px; font-weight:bold;">br-wan</text>
                             <rect x="450" y="130" width="200" height="15" rx="7" fill="#2d3748" stroke="#4a5568" />
+                            <text x="550" y="142" text-anchor="middle" fill="#718096" style="font-size:9px; font-weight:bold;">br-lan</text>
                         </g>
-                        <!-- Stage 2 -->
+                        <!-- Stage 2: Containers -->
                         <g class="st-ctr">
+                            <!-- WAN Host -->
                             <rect x="200" y="180" width="100" height="40" rx="8" fill="#3182ce" opacity="0.8" />
+                            <text x="250" y="205" text-anchor="middle" fill="white" style="font-size:10px; font-weight:bold;">wan-host</text>
+                            <!-- LAN Host -->
                             <rect x="500" y="180" width="100" height="40" rx="8" fill="#38a169" opacity="0.8" />
+                            <text x="550" y="205" text-anchor="middle" fill="white" style="font-size:10px; font-weight:bold;">lan-host</text>
+                            <!-- OpenWrt -->
                             <rect x="360" y="30" width="80" height="50" rx="10" fill="#4a5568" />
+                            <text x="400" y="60" text-anchor="middle" fill="white" style="font-size:11px; font-weight:bold;">OpenWrt</text>
                         </g>
                         <!-- Stage 3 -->
                         <g class="st-cfg" stroke="#a0aec0" stroke-width="2" stroke-dasharray="3">
