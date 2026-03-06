@@ -97,7 +97,47 @@
             <p class="text-gray-400 text-sm">此指令將自動完成網橋建立、容器部署與連通性測試。</p>
         </div>
 
+        <!-- Live Log Console -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold mb-6 text-center">最新執行日誌 (Live Execution Log)</h2>
+            <div class="bg-gray-900 rounded-lg p-6 shadow-2xl relative">
+                <div class="flex items-center space-x-2 mb-4">
+                    <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                    <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                    <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                    <span class="text-gray-400 text-xs ml-2 font-mono">console.log</span>
+                </div>
+                <pre id="log-content" class="text-green-400 font-mono text-sm leading-relaxed max-h-96 overflow-y-auto whitespace-pre-wrap">Loading latest execution logs from CI...</pre>
+                <div class="absolute top-6 right-6 text-gray-500 text-xs flex items-center">
+                    <i class="fas fa-sync-alt mr-2 animate-spin"></i> LIVE DATA
+                </div>
+            </div>
+        </section>
+
     </main>
+
+    <script>
+        // 自動抓取最新日誌
+        async function fetchLog() {
+            try {
+                // 加入亂數參數避免瀏覽器快取
+                const response = await fetch('./latest_log.txt?t=' + new Date().getTime());
+                if (response.ok) {
+                    const text = await response.text();
+                    document.getElementById('log-content').textContent = text;
+                } else {
+                    document.getElementById('log-content').textContent = "Waiting for initial CI run to generate logs...";
+                }
+            } catch (err) {
+                document.getElementById('log-content').textContent = "Error loading logs: " + err;
+            }
+        }
+        
+        // 頁面載入後抓取
+        window.onload = fetchLog;
+        // 每 3 分鐘自動更新一次
+        setInterval(fetchLog, 180000);
+    </script>
 
     <footer class="bg-gray-100 py-8 border-t">
         <div class="container mx-auto px-6 text-center text-gray-500 text-sm">

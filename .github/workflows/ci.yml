@@ -28,12 +28,20 @@ jobs:
 
       - name: Initialize Environment
         run: |
-          # 確保 LXD 已就緒
           sudo lxd waitready
-          # 執行一鍵部署與測試
           sudo make all
 
-      - name: Export Logs on Failure
-        if: failure()
+      - name: Update Live Log for Web
+        if: always()
         run: |
-          cat logs/execution.log || echo "No logs found"
+          mkdir -p docs
+          # 加上時間戳記並複製日誌
+          echo "=== Last CI Run: $(date) ===" > docs/latest_log.txt
+          sudo cat logs/execution.log >> docs/latest_log.txt || echo "No logs available" >> docs/latest_log.txt
+          
+          # 自動提交變更
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/latest_log.txt
+          git commit -m "docs: update latest execution log [skip ci]" || echo "No changes to commit"
+          git push origin main
