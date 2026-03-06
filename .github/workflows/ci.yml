@@ -42,12 +42,13 @@ jobs:
         if: always()
         run: |
           mkdir -p docs
-          echo "=== Latest Execution Log (CI Generated) ===" > docs/latest_log.txt
+          echo "=== Full Console Log (CI Generated) ===" > docs/latest_log.txt
           echo "Timestamp: $(date)" >> docs/latest_log.txt
           echo "------------------------------------------" >> docs/latest_log.txt
           
           if [ -f "logs/execution.log" ]; then
-            sudo cat logs/execution.log >> docs/latest_log.txt
+            # 使用 sed 過濾 ANSI 顏色代碼
+            sudo sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g" logs/execution.log >> docs/latest_log.txt
           else
             echo "Error: logs/execution.log not found." >> docs/latest_log.txt
           fi

@@ -8,6 +8,7 @@ all: build config test
 # 建立網路與部署容器
 build:
 	@mkdir -p logs
+	@rm -f logs/execution.log
 	@echo ">>> Building environment and deploying containers..."
 	./scripts/01-setup-net.sh
 	./scripts/02-deploy-containers.sh
