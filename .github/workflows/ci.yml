@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main ]
 
+# 授予推送變更回 GitHub 倉庫的權限
+permissions:
+  contents: write
+
 jobs:
   test-lab:
     runs-on: ubuntu-latest
@@ -13,6 +17,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # 獲取完整提交紀錄以利推送
+          fetch-depth: 0
 
       - name: Install ShellCheck
         run: sudo apt-get install -y shellcheck
@@ -35,13 +42,19 @@ jobs:
         if: always()
         run: |
           mkdir -p docs
-          # 加上時間戳記並複製日誌
-          echo "=== Last CI Run: $(date) ===" > docs/latest_log.txt
-          sudo cat logs/execution.log >> docs/latest_log.txt || echo "No logs available" >> docs/latest_log.txt
+          echo "=== Latest Execution Log (CI Generated) ===" > docs/latest_log.txt
+          echo "Timestamp: $(date)" >> docs/latest_log.txt
+          echo "------------------------------------------" >> docs/latest_log.txt
+          
+          if [ -f "logs/execution.log" ]; then
+            sudo cat logs/execution.log >> docs/latest_log.txt
+          else
+            echo "Error: logs/execution.log not found." >> docs/latest_log.txt
+          fi
           
           # 自動提交變更
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/latest_log.txt
-          git commit -m "docs: update latest execution log [skip ci]" || echo "No changes to commit"
+          git commit -m "docs: auto-update live log [skip ci]" || echo "Nothing to commit"
           git push origin main
