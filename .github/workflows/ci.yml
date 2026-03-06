@@ -1,0 +1,39 @@
+name: OpenWrt Lab CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-lab:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Lint Scripts
+        run: |
+          shellcheck scripts/*.sh
+
+      - name: Setup LXD
+        uses: canonical/setup-lxd@v5
+        with:
+          channel: latest/stable
+
+      - name: Initialize Environment
+        run: |
+          # 確保 LXD 已就緒
+          sudo lxd waitready
+          # 執行一鍵部署與測試
+          sudo make all
+
+      - name: Export Logs on Failure
+        if: failure()
+        run: |
+          cat logs/execution.log || echo "No logs found"
