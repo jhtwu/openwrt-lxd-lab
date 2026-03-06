@@ -1,0 +1,14 @@
+# Logs
+logs/*.log
+*.log
+
+# OS generated files
+.DS_Store
+.thumbs.db
+
+# Project specific
+tmp/
+.gemini/
+.idea/
+.vscode/
+EOF
