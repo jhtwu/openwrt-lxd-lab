@@ -165,99 +165,100 @@
             <h2 class="text-3xl font-bold mb-10 text-center">實驗室生命週期演示 (Lab Lifecycle)</h2>
             <div class="bg-gray-900 p-8 rounded-2xl shadow-2xl overflow-hidden border border-gray-700">
                 <style>
-                    /* 20秒長循環動畫 */
-                    @keyframes stage-fade {
-                        0%, 10% { opacity: 0; transform: translateY(10px); } /* Blank */
-                        15%, 85% { opacity: 1; transform: translateY(0); }   /* Visible */
-                        90%, 100% { opacity: 0; transform: translateY(-10px); } /* Cleanup */
+                    /* 20秒循環：統一斷點 
+                       0-10%: Blank
+                       10-25%: Bridge
+                       25-40%: Containers
+                       40-55%: Config
+                       55-85%: Test
+                       85-95%: Clean
+                       95-100%: Reset
+                    */
+                    @keyframes instant-fade {
+                        0%, 10% { opacity: 0; }
+                        11%, 84% { opacity: 1; }
+                        85%, 100% { opacity: 0; }
                     }
                     
-                    /* 每個階段的顯示控制 */
-                    .st-br  { animation: stage-fade 20s infinite; animation-delay: 2s; opacity: 0; }  /* Bridges (2s+) */
-                    .st-ctr { animation: stage-fade 20s infinite; animation-delay: 5s; opacity: 0; }  /* Containers (5s+) */
-                    .st-cfg { animation: stage-fade 20s infinite; animation-delay: 8s; opacity: 0; }  /* IP/Links (8s+) */
+                    .st-br  { animation: instant-fade 20s infinite; animation-delay: 0s; opacity: 0; }
                     
-                    /* 封包與測試結果：僅在 11s - 17s 出現 */
-                    @keyframes test-stage {
-                        0%, 54% { opacity: 0; }
-                        55%, 85% { opacity: 1; }
-                        90%, 100% { opacity: 0; }
+                    @keyframes instant-fade-2 {
+                        0%, 25% { opacity: 0; }
+                        26%, 84% { opacity: 1; }
+                        85%, 100% { opacity: 0; }
                     }
-                    .st-test { animation: test-stage 20s infinite; opacity: 0; }
+                    .st-ctr { animation: instant-fade-2 20s infinite; opacity: 0; }
 
-                    /* 指令文字循環 */
-                    @keyframes cmd-cycle-precise {
+                    @keyframes instant-fade-3 {
+                        0%, 40% { opacity: 0; }
+                        41%, 84% { opacity: 1; }
+                        85%, 100% { opacity: 0; }
+                    }
+                    .st-cfg { animation: instant-fade-3 20s infinite; opacity: 0; }
+
+                    @keyframes instant-fade-test {
+                        0%, 55% { opacity: 0; }
+                        56%, 84% { opacity: 1; }
+                        85%, 100% { opacity: 0; }
+                    }
+                    .st-test { animation: instant-fade-test 20s infinite; opacity: 0; }
+
+                    /* 指令文字同步 */
+                    @keyframes cmd-cycle-sync {
                         0%, 9%   { content: "ready to start..."; color: #718096; }
-                        10%, 24%  { content: "$ make build (Part 1: 01-setup-net.sh)"; color: #63b3ed; }
-                        25%, 39% { content: "$ make build (Part 2: 02-deploy-containers.sh)"; color: #63b3ed; }
-                        40%, 54% { content: "$ make config (Applying UCI settings...)"; color: #4fd1c5; }
-                        55%, 84% { content: "$ make test (Running Connectivity Tests...)"; color: #68d391; font-weight: bold; }
-                        85%, 95% { content: "$ make clean (Destroying environment...)"; color: #f56565; }
-                        96%, 100% { content: "environment cleaned."; color: #718096; }
+                        10%, 24% { content: "$ ./scripts/01-setup-net.sh (Creating Bridges)"; color: #63b3ed; }
+                        25%, 39% { content: "$ ./scripts/02-deploy-containers.sh (Launching LXD)"; color: #63b3ed; }
+                        40%, 54% { content: "$ ./scripts/04-configure-nodes.sh (Applying UCI)"; color: #4fd1c5; }
+                        55%, 84% { content: "$ make test (Visual Connectivity Verification)"; color: #68d391; font-weight: bold; }
+                        85%, 95% { content: "$ make clean (Immediate Clean Up)"; color: #f56565; }
+                        96%, 100% { content: "waiting for next loop..."; color: #718096; }
                     }
-                    #cmd-text::after {
-                        content: "";
-                        animation: cmd-cycle-precise 20s infinite;
-                    }
+                    #cmd-text::after { content: ""; animation: cmd-cycle-sync 20s infinite; }
 
-                    /* Cleanup 掃描線效果 */
-                    @keyframes cleanup-scan {
-                        0%, 84% { transform: translateX(-100%); }
-                        85%, 95% { transform: translateX(100%); }
-                        100% { transform: translateX(-100%); }
+                    @keyframes fast-clean {
+                        0%, 84% { transform: translateX(-100%); opacity: 0; }
+                        85%, 86% { opacity: 1; }
+                        90% { transform: translateX(100%); opacity: 0; }
+                        100% { transform: translateX(100%); opacity: 0; }
                     }
-                    .cleanup-overlay {
+                    .cleanup-line {
                         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-                        background: linear-gradient(90deg, transparent, rgba(245,101,101,0.2), transparent);
-                        animation: cleanup-scan 20s infinite;
+                        background: linear-gradient(90deg, transparent, rgba(245,101,101,0.4), transparent);
+                        animation: fast-clean 20s infinite;
                         pointer-events: none;
                     }
                 </style>
 
                 <div class="relative">
-                    <div class="cleanup-overlay"></div>
+                    <div class="cleanup-line"></div>
                     <svg viewBox="0 0 800 280" class="w-full h-auto">
-                        <!-- Stage 1: Bridges -->
+                        <!-- Stage 1 -->
                         <g class="st-br">
                             <rect x="150" y="130" width="200" height="15" rx="7" fill="#2d3748" stroke="#4a5568" />
-                            <text x="250" y="142" text-anchor="middle" fill="#718096" style="font-size:9px;">br-wan</text>
                             <rect x="450" y="130" width="200" height="15" rx="7" fill="#2d3748" stroke="#4a5568" />
-                            <text x="550" y="142" text-anchor="middle" fill="#718096" style="font-size:9px;">br-lan</text>
                         </g>
-
-                        <!-- Stage 2: Containers -->
+                        <!-- Stage 2 -->
                         <g class="st-ctr">
                             <rect x="200" y="180" width="100" height="40" rx="8" fill="#3182ce" opacity="0.8" />
-                            <text x="250" y="205" text-anchor="middle" fill="white" style="font-size:10px;">wan-host</text>
                             <rect x="500" y="180" width="100" height="40" rx="8" fill="#38a169" opacity="0.8" />
-                            <text x="550" y="205" text-anchor="middle" fill="white" style="font-size:10px;">lan-host</text>
                             <rect x="360" y="30" width="80" height="50" rx="10" fill="#4a5568" />
-                            <text x="400" y="60" text-anchor="middle" fill="white" style="font-size:11px;">OpenWrt</text>
                         </g>
-
-                        <!-- Stage 3: Logical Configuration (Links) -->
+                        <!-- Stage 3 -->
                         <g class="st-cfg" stroke="#a0aec0" stroke-width="2" stroke-dasharray="3">
-                            <path d="M400 80 L300 130" />
-                            <path d="M400 80 L500 130" />
-                            <path d="M250 180 L250 145" />
-                            <path d="M550 180 L550 145" />
+                            <path d="M400 80 L300 130" /> <path d="M400 80 L500 130" />
+                            <path d="M250 180 L250 145" /> <path d="M550 180 L550 145" />
                         </g>
-
-                        <!-- Stage 4: Interactive Test (Only visible during Test phase) -->
+                        <!-- Stage 4 -->
                         <g class="st-test">
-                            <!-- Animated Packet -->
                             <circle r="5" fill="#f6e05e">
-                                <animateMotion dur="2s" repeatCount="indefinite" 
-                                    path="M550 180 L550 130 L400 80 L250 130 L250 180" />
+                                <animateMotion dur="2s" repeatCount="indefinite" path="M550 180 L550 130 L400 80 L250 130 L250 180" />
                             </circle>
-                            <text x="400" y="115" text-anchor="middle" fill="#68d391" style="font-size:14px; font-weight:bold;">PING SUCCESS</text>
-                            <rect x="340" y="95" width="120" height="30" rx="15" fill="none" stroke="#68d391" stroke-width="1" class="animate-pulse" />
+                            <text x="400" y="115" text-anchor="middle" fill="#68d391" style="font-size:14px; font-weight:bold;">PING RUNNING...</text>
                         </g>
                     </svg>
                 </div>
 
-                <!-- Command Display Box -->
-                <div class="mt-6 bg-black p-5 rounded-lg border border-gray-800 font-mono text-sm shadow-inner">
+                <div class="mt-6 bg-black p-5 rounded-lg border border-gray-800 font-mono text-sm shadow-inner overflow-hidden">
                     <div class="flex items-center">
                         <span class="text-green-500 mr-2">➜</span>
                         <span class="text-gray-500">~/openwrt-lab</span>
