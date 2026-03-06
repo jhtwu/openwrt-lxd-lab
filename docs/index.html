@@ -52,13 +52,81 @@
             </div>
         </div>
 
-        <!-- Topology Section -->
+        <!-- Interactive Topology Section -->
         <section class="mb-16">
-            <h2 class="text-3xl font-bold mb-6 text-center">網路拓撲圖 (Topology)</h2>
-            <div class="topology-box p-8 rounded-lg shadow-inner overflow-x-auto text-sm leading-relaxed">
-<pre>
-[wan-host: 10.0.0.2] <--- (br-wan) ---> [openwrt: 10.0.0.1 | 192.168.1.1] <--- (br-lan) ---> [lan-host: 192.168.1.10]
-</pre>
+            <h2 class="text-3xl font-bold mb-10 text-center">互動式網路拓撲 (Interactive Topology)</h2>
+            <div class="bg-white p-10 rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+                <svg viewBox="0 0 800 300" class="w-full h-auto">
+                    <!-- Definitions for gradients and markers -->
+                    <defs>
+                        <linearGradient id="wanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#3182ce;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#63b3ed;stop-opacity:1" />
+                        </linearGradient>
+                        <linearGradient id="lanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#38a169;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#68d391;stop-opacity:1" />
+                        </linearGradient>
+                        <!-- Packet Dot Filter -->
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Connections (Bridges) -->
+                    <rect x="50" y="240" width="300" height="10" rx="5" fill="#ebf8ff" />
+                    <text x="200" y="270" text-anchor="middle" class="fill-blue-500 text-xs font-bold">br-wan (External)</text>
+                    
+                    <rect x="450" y="240" width="300" height="10" rx="5" fill="#f0fff4" />
+                    <text x="600" y="270" text-anchor="middle" class="fill-green-500 text-xs font-bold">br-lan (Internal)</text>
+
+                    <!-- Cables -->
+                    <!-- WAN Cable -->
+                    <path id="cable-wan" d="M150 150 L400 100" stroke="#cbd5e0" stroke-width="3" stroke-dasharray="8,4" />
+                    <!-- LAN Cable -->
+                    <path id="cable-lan" d="M400 100 L650 150" stroke="#cbd5e0" stroke-width="3" stroke-dasharray="8,4" />
+
+                    <!-- Packet Animation (Dots) -->
+                    <circle r="4" fill="#4299e1" filter="url(#glow)">
+                        <animateMotion dur="3s" repeatCount="indefinite" path="M650 150 L400 100 L150 150 L400 100 L650 150" />
+                    </circle>
+
+                    <!-- Nodes -->
+                    <!-- WAN Host -->
+                    <g class="cursor-pointer transition-transform duration-300 hover:-translate-y-2">
+                        <rect x="75" y="150" width="150" height="60" rx="10" fill="url(#wanGrad)" shadow="lg" />
+                        <text x="150" y="180" text-anchor="middle" fill="white" class="font-bold">wan-host</text>
+                        <text x="150" y="200" text-anchor="middle" fill="#ebf8ff" class="text-[10px]">10.0.0.2 [wan]</text>
+                        <circle cx="150" cy="140" r="15" fill="#2b6cb0" />
+                        <text x="150" y="145" text-anchor="middle" fill="white" class="text-[10px]"><i class="fas fa-server"></i></text>
+                    </g>
+
+                    <!-- OpenWrt Router -->
+                    <g class="cursor-pointer">
+                        <rect x="325" y="40" width="150" height="80" rx="12" fill="#2d3748" />
+                        <text x="400" y="80" text-anchor="middle" fill="white" class="font-bold">OpenWrt</text>
+                        <text x="400" y="100" text-anchor="middle" fill="#a0aec0" class="text-[10px]">GW: 10.0.0.1 / 192.168.1.1</text>
+                        <circle cx="400" cy="30" r="20" fill="#4a5568" />
+                        <text x="400" y="37" text-anchor="middle" fill="#63b3ed" class="text-xs">⚡</text>
+                    </g>
+
+                    <!-- LAN Host -->
+                    <g class="cursor-pointer transition-transform duration-300 hover:-translate-y-2">
+                        <rect x="575" y="150" width="150" height="60" rx="10" fill="url(#lanGrad)" />
+                        <text x="650" y="180" text-anchor="middle" fill="white" class="font-bold">lan-host</text>
+                        <text x="650" y="200" text-anchor="middle" fill="#f0fff4" class="text-[10px]">192.168.1.10 [lan]</text>
+                        <circle cx="650" cy="140" r="15" fill="#2f855a" />
+                        <text x="650" y="145" text-anchor="middle" fill="white" class="text-[10px]">💻</text>
+                    </g>
+                </svg>
+                <div class="mt-4 flex justify-center space-x-6 text-xs text-gray-400">
+                    <span class="flex items-center"><span class="w-3 h-3 bg-blue-500 rounded-full mr-2"></span> WAN Traffic</span>
+                    <span class="flex items-center"><span class="w-3 h-3 bg-green-500 rounded-full mr-2"></span> LAN Traffic</span>
+                    <span class="flex items-center animate-pulse"><span class="w-2 h-2 bg-blue-400 rounded-full mr-2"></span> ICMP Packet Flow</span>
+                </div>
             </div>
         </section>
 
