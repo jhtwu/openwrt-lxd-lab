@@ -1,6 +1,7 @@
 #!/bin/bash
 # scripts/cleanup.sh: 完全清除實驗室環境 (容器與網橋)
 
+# shellcheck disable=SC1091
 source "$(dirname "$0")/common.sh"
 
 info "=========================================="

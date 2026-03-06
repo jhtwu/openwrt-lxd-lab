@@ -1,6 +1,7 @@
 #!/bin/bash
 # scripts/03-verify.sh: 視覺化架構驗證與精確狀態報告
 
+# shellcheck disable=SC1091
 source "$(dirname "$0")/common.sh"
 
 # 顏色定義
@@ -51,7 +52,7 @@ for br in "$BRIDGE_WAN" "$BRIDGE_LAN"; do
     
     # 抓取後續的介面行 (如果有的話)
     brctl show "$br" | sed -n '3,$p' | while read -r extra_if; do
-        if [ ! -z "$extra_if" ]; then
+        if [ -n "$extra_if" ]; then
             printf "%-15s %-20s %-10s ${YELLOW}%-15s${NC}\n" "" "" "" "$extra_if"
         fi
     done

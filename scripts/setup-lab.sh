@@ -1,6 +1,7 @@
 #!/bin/bash
 # scripts/setup-lab.sh: 一鍵自動化部署與測試主控腳本
 
+# shellcheck disable=SC1091
 source "$(dirname "$0")/common.sh"
 
 info "=========================================="

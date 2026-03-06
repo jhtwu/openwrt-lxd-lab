@@ -1,9 +1,10 @@
 #!/bin/bash
 # scripts/common.sh: 通用函數與日誌記錄
 
-# 引入配置
+# shellcheck disable=SC1091
 CONFIG_FILE="$(dirname "$0")/../config/env.conf"
 if [ -f "$CONFIG_FILE" ]; then
+# shellcheck disable=SC1091
     source "$CONFIG_FILE"
 else
     echo "ERROR: Config file not found at $CONFIG_FILE"
@@ -15,7 +16,8 @@ LOG_FILE="$(dirname "$0")/../logs/execution.log"
 log() {
     local level="$1"
     local message="$2"
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+    local timestamp
+    timestamp=$(date '+%Y-%m-%d %H:%M:%S')
     echo "[$timestamp] [$level] $message" | tee -a "$LOG_FILE"
 }
 
@@ -27,6 +29,5 @@ error() { log "ERROR" "$1"; exit 1; }
 print_status() {
     local item="$1"
     local status="$2"
-    printf "%-30s [%b%s%b]
-" "$item" "\033[32m" "$status" "\033[0m"
+    printf "%-30s [%b%s%b]\n" "$item" "\033[32m" "$status" "\033[0m"
 }

@@ -1,6 +1,7 @@
 #!/bin/bash
 # scripts/02-deploy-containers.sh: 建立 OpenWrt 與測試主機
 
+# shellcheck disable=SC1091
 source "$(dirname "$0")/common.sh"
 
 info "Initializing Containers Deployment..."

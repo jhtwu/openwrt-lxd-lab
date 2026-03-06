@@ -1,6 +1,7 @@
 #!/bin/bash
 # scripts/01-setup-net.sh: 建立網橋
 
+# shellcheck disable=SC1091
 source "$(dirname "$0")/common.sh"
 
 info "Initializing Network Bridges..."

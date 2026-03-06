@@ -1,6 +1,7 @@
 #!/bin/bash
 # scripts/04-configure-nodes.sh: 設定 OpenWrt 與 Host 的 IP 位址
 
+# shellcheck disable=SC1091
 source "$(dirname "$0")/common.sh"
 
 info "Configuring OpenWrt ($CTR_ROUTER)..."

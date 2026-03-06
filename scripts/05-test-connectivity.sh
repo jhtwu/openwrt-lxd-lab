@@ -1,6 +1,7 @@
 #!/bin/bash
 # scripts/05-test-connectivity.sh: 視覺化連通性測試
 
+# shellcheck disable=SC1091
 source "$(dirname "$0")/common.sh"
 
 # 定義顏色與符號
@@ -29,7 +30,7 @@ test_ping_visual() {
     
     # 動態模擬點點點 (模擬傳輸感)
     echo -n "  Sending ICMP Packets "
-    for i in {1..3}; do echo -n "."; sleep 0.2; done
+    for _ in {1..3}; do echo -n "."; sleep 0.2; done
     
     if lxc exec "$src_name" -- ping -c 2 -W 1 "$target_ip" > /dev/null 2>&1; then
         echo -e " [ ${GREEN}${CHECK} SUCCESS${NC} ]"
@@ -54,7 +55,7 @@ test_ping_visual "$CTR_WAN_HOST" "$WAN_IP_HOST" "$CIF_WAN" \
 echo -e "\n${BLUE}[Test 3: Cross-Zone Routing (LAN to WAN Host)]${NC}"
 echo -e "  ${YELLOW}${CTR_LAN_HOST}${NC} ($LAN_IP_HOST) ${ARROW} ${GREEN}Router${NC} ${ARROW} ${YELLOW}${CTR_WAN_HOST}${NC} ($WAN_IP_HOST)"
 echo -n "  Traversing Firewall/NAT "
-for i in {1..3}; do echo -n "."; sleep 0.2; done
+for _ in {1..3}; do echo -n "."; sleep 0.2; done
 
 if lxc exec "$CTR_LAN_HOST" -- ping -c 2 -W 1 "$WAN_IP_HOST" > /dev/null 2>&1; then
     echo -e " [ ${GREEN}${CHECK} ROUTING OK${NC} ]"
@@ -64,10 +65,10 @@ fi
 
 # 4. 路由路徑追蹤
 echo -e "\n${BLUE}[Diagnostic: Traceroute Mapping]${NC}"
-lxc exec "$CTR_LAN_HOST" -- traceroute -n -m 5 "$WAN_IP_HOST" 2>/dev/null | tail -n +2 | while read line; do
-    hop=$(echo $line | awk '{print $1}')
-    ip=$(echo $line | awk '{print $2}')
-    time=$(echo $line | awk '{print $4}')
+lxc exec "$CTR_LAN_HOST" -- traceroute -n -m 5 "$WAN_IP_HOST" 2>/dev/null | tail -n +2 | while read -r line; do
+    hop=$(echo "$line" | awk '{print $1}')
+    ip=$(echo "$line" | awk '{print $2}')
+    time=$(echo "$line" | awk '{print $4}')
     echo -e "  Hop $hop: ${GREEN}$ip${NC} ($time ms)"
 done
 
