@@ -9,11 +9,6 @@
 - **追蹤性**: 所有變更必須寫入 `/logs/execution.log`。
 - **可重現性**: 任何配置更動必須先反映於 `config/env.conf`。
 
-## 🏗️ 編譯與建置規範 (Build & Compilation Policy)
-- **遠端編譯原則**: 未來所有 v2963 的 Linux 核心、rootfs squashfs 或相關二進位檔案編譯，**禁止在本地 PC 執行**。必須一律使用遠端 `jmykd5` 上的特權嵌套 LXC 容器 `ubuntu2404-build-2963U` 進行高效率編譯與 PKI 簽章。
-- **原生檔案系統編譯**: 在容器中執行編譯時，必須設定 `export KDIR_UBUNTU=/tmp/ubuntu-kernel-build` 將 debootstrap 與 chroot 目錄置於容器內部原生路徑，避免在 host 共享掛載目錄 `/project` 下解壓（會因安全限制導致設備節點寫入及 `tar` 失敗）。
-- **產物下載與清理**: 編譯簽署完畢後，將 `fit.itb` 與 `rootfs2.squashfs` 下載至本地 PC 的 `v2963-ubuntu-deploy/images` 目錄下並更新 `manifest.sha256`。下載完成後，AI 代理**必須主動清理**容器內的 `/tmp/ubuntu-kernel-build` 暫存目錄以節省空間。
-
 ## 系統狀態模型
 | 狀態名稱 | 判定條件 | 恢復動作 |
 | :--- | :--- | :--- |
