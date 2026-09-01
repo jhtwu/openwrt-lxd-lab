@@ -109,7 +109,7 @@ test_iperf3() {
     local -a client_args=()
 
     echo -e "\n${BLUE}[$label]${NC}"
-    echo -e "  ${YELLOW}${CTR_LAN_HOST}${NC} ${ARROW} ${GREEN}OpenWrt router${NC} ${ARROW} ${YELLOW}${CTR_WAN_HOST}${NC}"
+    echo -e "  ${YELLOW}${CTR_LAN_HOST}${NC} ${ARROW} ${GREEN}${CTR_ROUTER}${NC} ${ARROW} ${YELLOW}${CTR_WAN_HOST}${NC}"
 
     if [ "$reverse" -eq 1 ]; then
         client_args=(-R)
@@ -185,7 +185,7 @@ fi
 
 # 4. 路由路徑追蹤
 echo -e "\n${BLUE}[Diagnostic: Traceroute Mapping]${NC}"
-lxc exec "$CTR_LAN_HOST" -- traceroute -n -m 5 "$WAN_IP_HOST" 2>/dev/null | tail -n +2 | while read -r line; do
+timeout 10s lxc exec "$CTR_LAN_HOST" -- traceroute -n -m 5 "$WAN_IP_HOST" 2>/dev/null | tail -n +2 | while read -r line; do
     if [ -n "$line" ]; then
         echo -e "  Hop: ${GREEN}$line${NC}"
     fi

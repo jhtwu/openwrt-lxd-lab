@@ -1,4 +1,4 @@
-# OpenWrt LXD Test Lab
+# OpenWrt / uC/OS-II LXD Test Lab
 
 這是一個自動化的 LXD 實驗室環境。
 
@@ -28,15 +28,20 @@ sudo make clean   # 清除環境
 ## 🌐 網路拓撲簡圖
 
 ```text
-[wan-host: 10.0.0.2] --(br-wan)-- [openwrt: 10.0.0.1 | 192.168.1.1] --(br-lan)-- [lan-host: 192.168.1.10]
+[wan-host: 10.3.5.103] --(br-wan)-- [uC/OS-II QEMU: 10.3.5.99 | 192.168.1.1] --(br-lan)-- [lan-host: 192.168.1.10]
 ```
 
 ## 🛠 技術規格
 
 - **Hypervisor**: LXD (Containers)
-- **Router OS**: OpenWrt 24.10
+- **Router OS**: uC/OS-II AArch64 in QEMU (`vendor/ucosii-aarch64`)
+- **QEMU resources**: 1 vCPU, 2048 MiB configured memory, AArch64 TCG on x86_64 hosts
 - **Test Hosts**: Alpine Linux
 - **Bridge Support**: 標準 Linux Bridge (`br-wan`, `br-lan`)
+
+uC/OS-II source: [jhtwu/ucosii-aarch64](https://github.com/jhtwu/ucosii-aarch64). The host needs
+`qemu-system-aarch64` and an `aarch64-linux-gnu` cross-toolchain; `make all` initializes the
+submodule and builds the image automatically.
 
 ---
 更多技術細節請參考 `docs/README.md` 或 `AGENTS.md`。

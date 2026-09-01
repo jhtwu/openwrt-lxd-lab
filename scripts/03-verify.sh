@@ -4,6 +4,8 @@
 # shellcheck disable=SC1091
 source "$(dirname "$0")/common.sh"
 
+PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
 # 顏色定義
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
@@ -22,6 +24,20 @@ get_status_label() {
 }
 check_link() { ip link show master "$1" | grep -q "$2"; }
 check_ctr() { lxc info "$1" | grep -q "Status: RUNNING"; }
+check_router() {
+    if [ "$ROUTER_MODE" = "ucosii" ]; then
+        local pid
+        [ -f "$PROJECT_ROOT/$QEMU_ROUTER_PID_FILE" ] || return 1
+        pid=$(cat "$PROJECT_ROOT/$QEMU_ROUTER_PID_FILE")
+        case "$pid" in
+            ''|*[!0-9]*) return 1 ;;
+        esac
+        kill -0 "$pid" 2>/dev/null || return 1
+        [ "$(basename "$(readlink -f "/proc/$pid/exe" 2>/dev/null)")" = "qemu-system-aarch64" ]
+    else
+        check_ctr "$CTR_ROUTER"
+    fi
+}
 
 echo -e "\n${BOLD}1. LOGICAL TOPOLOGY MAPPING${NC}"
 echo -e "----------------------------------------------------------"
@@ -58,20 +74,39 @@ for br in "$BRIDGE_WAN" "$BRIDGE_LAN"; do
     done
 done
 
-echo -e "\n${BOLD}3. LIVE CONTAINER STATUS (lxc list)${NC}"
+echo -e "\n${BOLD}3. LIVE ROUTER/HOST STATUS${NC}"
 echo -e "----------------------------------------------------------"
 printf "${BLUE}%-18s | %-10s | %-20s${NC}\n" "NAME" "STATE" "IPV4"
 echo -e "-------------------+------------+-------------------------"
-for ctr in "$CTR_ROUTER" "$CTR_WAN_HOST" "$CTR_LAN_HOST"; do
-    # 提取狀態與 IP
-    status=$(lxc info "$ctr" | grep "Status:" | awk '{print $2}')
-    # 提取所有 IP 並合併
-    ips=$(lxc list "$ctr" --format csv -c 4 | tr '\n' ' ' | sed 's/ $//')
-    [ -z "$ips" ] && ips="n/a"
-    
-    printf "%-18s | %-10s | %-20s\n" "$ctr" "$status" "$ips"
-done
+if [ "$ROUTER_MODE" = "ucosii" ]; then
+    if check_router; then
+        printf "%-18s | %-10s | %-20s\n" "$CTR_ROUTER" "RUNNING" \
+            "$LAN_IP_ROUTER (lan) $WAN_IP_ROUTER (wan)"
+    else
+        printf "%-18s | %-10s | %-20s\n" "$CTR_ROUTER" "STOPPED" "n/a"
+    fi
+    for ctr in "$CTR_WAN_HOST" "$CTR_LAN_HOST"; do
+        status=$(lxc info "$ctr" | grep "Status:" | awk '{print $2}')
+        ips=$(lxc list "$ctr" --format csv -c 4 | tr '\n' ' ' | sed 's/ $//')
+        [ -z "$ips" ] && ips="n/a"
+        printf "%-18s | %-10s | %-20s\n" "$ctr" "$status" "$ips"
+    done
+else
+    for ctr in "$CTR_ROUTER" "$CTR_WAN_HOST" "$CTR_LAN_HOST"; do
+        # 提取狀態與 IP
+        status=$(lxc info "$ctr" | grep "Status:" | awk '{print $2}')
+        # 提取所有 IP 並合併
+        ips=$(lxc list "$ctr" --format csv -c 4 | tr '\n' ' ' | sed 's/ $//')
+        [ -z "$ips" ] && ips="n/a"
+
+        printf "%-18s | %-10s | %-20s\n" "$ctr" "$status" "$ips"
+    done
+fi
 echo -e "----------------------------------------------------------"
+
+if ! check_router; then
+    error "Router is not running. Infrastructure verification failed."
+fi
 
 info "   ✅ Infrastructure verification completed.               "
 info "=========================================================="

@@ -54,8 +54,17 @@ deploy_host() {
 }
 
 # 執行部署
-deploy_openwrt "$CTR_ROUTER" "$OPENWRT_VERSION" "$BRIDGE_WAN" "$BRIDGE_LAN"
+if [ "$ROUTER_MODE" = "ucosii" ]; then
+    info "uC/OS-II router mode selected; deploying QEMU router instead of an OpenWrt container."
+    cleanup_container "$LEGACY_CTR_ROUTER"
+else
+    deploy_openwrt "$CTR_ROUTER" "$OPENWRT_VERSION" "$BRIDGE_WAN" "$BRIDGE_LAN"
+fi
 deploy_host "$CTR_WAN_HOST" "$BRIDGE_WAN" "$HIF_WAN_HOST" "$CIF_WAN"
 deploy_host "$CTR_LAN_HOST" "$BRIDGE_LAN" "$HIF_LAN_HOST" "$CIF_LAN"
+
+if [ "$ROUTER_MODE" = "ucosii" ]; then
+    "$(dirname "$0")/ucosii-router.sh" start
+fi
 
 info "Containers deployment completed."

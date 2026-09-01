@@ -11,4 +11,4 @@ tmp/
 .gemini/
 .idea/
 .vscode/
-EOF
+run/

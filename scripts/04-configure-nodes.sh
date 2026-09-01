@@ -4,12 +4,15 @@
 # shellcheck disable=SC1091
 source "$(dirname "$0")/common.sh"
 
-info "Configuring OpenWrt ($CTR_ROUTER)..."
+if [ "$ROUTER_MODE" = "ucosii" ]; then
+    info "uC/OS-II router uses built-in static LAN/WAN configuration."
+else
+    info "Configuring OpenWrt ($CTR_ROUTER)..."
 
-# 等待 OpenWrt 初始化完成
-sleep 2
+    # 等待 OpenWrt 初始化完成
+    sleep 2
 
-lxc exec "$CTR_ROUTER" -- sh -c "
+    lxc exec "$CTR_ROUTER" -- sh -c "
 uci set network.wan=interface
 uci set network.wan.device='$CIF_WAN'
 uci set network.wan.proto='static'
@@ -45,6 +48,7 @@ uci commit firewall
 /etc/init.d/network restart
 /etc/init.d/firewall restart
 " || error "Failed to configure OpenWrt"
+fi
 
 info "Configuring WAN Host ($CTR_WAN_HOST)..."
 lxc exec "$CTR_WAN_HOST" -- ip addr replace "$WAN_IP_HOST/24" dev "$CIF_WAN"

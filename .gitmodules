@@ -1,0 +1,3 @@
+[submodule "vendor/ucosii-aarch64"]
+	path = vendor/ucosii-aarch64
+	url = git@github.com:jhtwu/ucosii-aarch64.git

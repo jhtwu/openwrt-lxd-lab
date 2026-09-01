@@ -21,7 +21,12 @@ cleanup_container() {
     fi
 }
 
-cleanup_container "$CTR_ROUTER"
+if [ "$ROUTER_MODE" = "ucosii" ]; then
+    "$(dirname "$0")/ucosii-router.sh" cleanup
+    cleanup_container "$LEGACY_CTR_ROUTER"
+else
+    cleanup_container "$CTR_ROUTER"
+fi
 cleanup_container "$CTR_WAN_HOST"
 cleanup_container "$CTR_LAN_HOST"
 
