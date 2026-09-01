@@ -28,7 +28,7 @@ sudo make clean   # 清除環境
 ## 🌐 網路拓撲簡圖
 
 ```text
-[wan-host: 10.3.5.103] --(br-wan)-- [uC/OS-II QEMU: 10.3.5.99 | 192.168.1.1] --(br-lan)-- [lan-host: 192.168.1.10]
+[wan-host: 10.0.0.2] --(br-wan)-- [uC/OS-II QEMU: 10.0.0.1 | 192.168.1.1] --(br-lan)-- [lan-host: 192.168.1.10]
 ```
 
 ## 🛠 技術規格
