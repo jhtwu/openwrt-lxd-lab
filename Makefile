@@ -26,7 +26,7 @@ verify:
 	@echo ">>> Running infrastructure verification..."
 	./scripts/03-verify.sh
 
-# 功能性測試 (Ping/Routing)
+# 功能性測試 (Ping/Routing/iperf3)
 connectivity:
 	@echo ">>> Running connectivity functional tests..."
 	./scripts/05-test-connectivity.sh
