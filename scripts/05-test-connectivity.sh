@@ -11,6 +11,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 ARROW="---▶"
 CHECK="✔"
+failures=0
 
 info "=========================================================="
 info "   🚀 OpenWrt Lab: Visual Connectivity Test Start         "
@@ -42,14 +43,18 @@ test_ping_visual() {
 }
 
 # 1. LAN 內部測試
-test_ping_visual "$CTR_LAN_HOST" "$LAN_IP_HOST" "$CIF_LAN" \
-                 "$CTR_ROUTER" "$LAN_IP_ROUTER" "$CIF_LAN" \
-                 "Test 1: Internal LAN Connection"
+if ! test_ping_visual "$CTR_LAN_HOST" "$LAN_IP_HOST" "$CIF_LAN" \
+                    "$CTR_ROUTER" "$LAN_IP_ROUTER" "$CIF_LAN" \
+                    "Test 1: Internal LAN Connection"; then
+    failures=$((failures + 1))
+fi
 
 # 2. WAN 內部測試
-test_ping_visual "$CTR_WAN_HOST" "$WAN_IP_HOST" "$CIF_WAN" \
-                 "$CTR_ROUTER" "$WAN_IP_ROUTER" "$CIF_WAN" \
-                 "Test 2: External WAN Connection"
+if ! test_ping_visual "$CTR_WAN_HOST" "$WAN_IP_HOST" "$CIF_WAN" \
+                    "$CTR_ROUTER" "$WAN_IP_ROUTER" "$CIF_WAN" \
+                    "Test 2: External WAN Connection"; then
+    failures=$((failures + 1))
+fi
 
 # 3. 跨區段轉發測試 (End-to-End)
 echo -e "\n${BLUE}[Test 3: Cross-Zone Routing (LAN to WAN Host)]${NC}"
@@ -61,6 +66,7 @@ if lxc exec "$CTR_LAN_HOST" -- ping -c 2 -W 1 "$WAN_IP_HOST" > /dev/null 2>&1; t
     echo -e " [ ${GREEN}${CHECK} ROUTING OK${NC} ]"
 else
     echo -e " [ \033[0;31m✘ FORWARDING BLOCKED\033[0m ]"
+    failures=$((failures + 1))
 fi
 
 # 4. 路由路徑追蹤
@@ -71,6 +77,10 @@ lxc exec "$CTR_LAN_HOST" -- traceroute -n -m 5 "$WAN_IP_HOST" 2>/dev/null | tail
     fi
 done
 
+
+if [ "$failures" -ne 0 ]; then
+    error "${failures} connectivity test(s) failed."
+fi
 
 info "=========================================================="
 info "   ✅ All functional tests finished.                      "
