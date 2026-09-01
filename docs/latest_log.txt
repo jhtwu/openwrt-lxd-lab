@@ -1,35 +1,35 @@
 === Full Console Log (CI Generated) ===
-Timestamp: Tue Sep  1 15:21:20 UTC 2026
+Timestamp: Tue Sep  1 15:36:03 UTC 2026
 ------------------------------------------
-[2026-09-01 15:20:49] [INFO] Initializing Network Bridges...
-[2026-09-01 15:20:49] [INFO] Creating bridge br-wan...
+[2026-09-01 15:35:20] [INFO] Initializing Network Bridges...
+[2026-09-01 15:35:20] [INFO] Creating bridge br-wan...
 Bridge br-wan                  [CREATED]
-[2026-09-01 15:20:49] [INFO] Creating bridge br-lan...
+[2026-09-01 15:35:20] [INFO] Creating bridge br-lan...
 Bridge br-lan                  [CREATED]
-[2026-09-01 15:20:49] [INFO] Network bridges setup completed.
-[2026-09-01 15:20:49] [INFO] Initializing Containers Deployment...
-[2026-09-01 15:20:49] [INFO] Deploying OpenWrt Router: openwrt-router (Version: 24.10)
+[2026-09-01 15:35:20] [INFO] Network bridges setup completed.
+[2026-09-01 15:35:20] [INFO] Initializing Containers Deployment...
+[2026-09-01 15:35:20] [INFO] Deploying OpenWrt Router: openwrt-router (Version: 24.10)
 Creating openwrt-router
-[2026-09-01 15:20:53] [INFO] Configuring Network Interfaces for openwrt-router...
+[2026-09-01 15:35:24] [INFO] Configuring Network Interfaces for openwrt-router...
 Device wan added to openwrt-router
 Device lan added to openwrt-router
 Container openwrt-router       [RUNNING (wan, lan)]
-[2026-09-01 15:20:53] [INFO] Deploying Test Host: wan-host on br-wan
+[2026-09-01 15:35:25] [INFO] Deploying Test Host: wan-host on br-wan
 Launching wan-host
 Device wan added to wan-host
 Container wan-host             [RUNNING (wan)]
-[2026-09-01 15:21:03] [INFO] Deploying Test Host: lan-host on br-lan
+[2026-09-01 15:35:34] [INFO] Deploying Test Host: lan-host on br-lan
 Launching lan-host
 Device lan added to lan-host
 Container lan-host             [RUNNING (lan)]
-[2026-09-01 15:21:10] [INFO] Containers deployment completed.
-[2026-09-01 15:21:10] [INFO] Configuring OpenWrt (openwrt-router)...
-[2026-09-01 15:21:13] [INFO] Configuring WAN Host (wan-host)...
-[2026-09-01 15:21:14] [INFO] Configuring LAN Host (lan-host)...
+[2026-09-01 15:35:40] [INFO] Containers deployment completed.
+[2026-09-01 15:35:40] [INFO] Configuring OpenWrt (openwrt-router)...
+[2026-09-01 15:35:43] [INFO] Configuring WAN Host (wan-host)...
+[2026-09-01 15:35:44] [INFO] Configuring LAN Host (lan-host)...
 Configuration                  [APPLIED]
-[2026-09-01 15:21:14] [INFO] ==========================================================
-[2026-09-01 15:21:14] [INFO]    🔍 OpenWrt Lab: Infrastructure Architecture Report     
-[2026-09-01 15:21:14] [INFO] ==========================================================
+[2026-09-01 15:35:44] [INFO] ==========================================================
+[2026-09-01 15:35:44] [INFO]    🔍 OpenWrt Lab: Infrastructure Architecture Report     
+[2026-09-01 15:35:44] [INFO] ==========================================================
 
 1. LOGICAL TOPOLOGY MAPPING
 ----------------------------------------------------------
@@ -56,14 +56,14 @@ bridge name     bridge id            STP        interfaces
 NAME               | STATE      | IPV4                
 -------------------+------------+-------------------------
 openwrt-router     | RUNNING    | "192.168.1.1 (lan) 10.0.0.1 (wan)"
-wan-host           | RUNNING    | "10.127.18.28 (eth0) 10.0.0.2 (wan)"
-lan-host           | RUNNING    | "192.168.1.10 (lan) 10.127.18.91 (eth0)"
+wan-host           | RUNNING    | "10.25.169.130 (eth0) 10.0.0.2 (wan)"
+lan-host           | RUNNING    | "192.168.1.10 (lan) 10.25.169.87 (eth0)"
 ----------------------------------------------------------
-[2026-09-01 15:21:14] [INFO]    ✅ Infrastructure verification completed.               
-[2026-09-01 15:21:14] [INFO] ==========================================================
-[2026-09-01 15:21:14] [INFO] ==========================================================
-[2026-09-01 15:21:14] [INFO]    🚀 OpenWrt Lab: Visual Connectivity Test Start         
-[2026-09-01 15:21:14] [INFO] ==========================================================
+[2026-09-01 15:35:44] [INFO]    ✅ Infrastructure verification completed.               
+[2026-09-01 15:35:44] [INFO] ==========================================================
+[2026-09-01 15:35:44] [INFO] ==========================================================
+[2026-09-01 15:35:44] [INFO]    🚀 OpenWrt Lab: Visual Connectivity Test Start         
+[2026-09-01 15:35:44] [INFO] ==========================================================
 
 [Test 1: Internal LAN Connection]
   lan-host (192.168.1.10) [lan] ---▶ openwrt-router (192.168.1.1) [lan]
@@ -78,8 +78,34 @@ lan-host           | RUNNING    | "192.168.1.10 (lan) 10.127.18.91 (eth0)"
   Traversing Firewall/NAT ... [ ✔ ROUTING OK ]
 
 [Diagnostic: Traceroute Mapping]
-  Hop: 1  192.168.1.1  0.005 ms  0.004 ms  0.004 ms
-  Hop: 2  10.0.0.2  0.006 ms  0.003 ms  0.004 ms
-[2026-09-01 15:21:20] [INFO] ==========================================================
-[2026-09-01 15:21:20] [INFO]    ✅ All functional tests finished.                      
-[2026-09-01 15:21:20] [INFO] ==========================================================
+  Hop: 1  192.168.1.1  0.005 ms  0.006 ms  0.005 ms
+  Hop: 2  10.0.0.2  0.021 ms  0.004 ms  0.005 ms
+[2026-09-01 15:35:50] [INFO] iperf3 is missing in wan-host; installing it...
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/main/x86_64/APKINDEX.tar.gz
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/community/x86_64/APKINDEX.tar.gz
+(1/2) Installing iperf3 (3.17.1-r0)
+(2/2) Installing iperf3-openrc (3.17.1-r0)
+Executing busybox-1.37.0-r14.trigger
+OK: 9 MiB in 31 packages
+[2026-09-01 15:35:50] [INFO] iperf3 is missing in lan-host; installing it...
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/main/x86_64/APKINDEX.tar.gz
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/community/x86_64/APKINDEX.tar.gz
+(1/2) Installing iperf3 (3.17.1-r0)
+(2/2) Installing iperf3-openrc (3.17.1-r0)
+Executing busybox-1.37.0-r14.trigger
+OK: 9 MiB in 31 packages
+
+[Test 5: Throughput TX]
+  lan-host ---▶ OpenWrt router ---▶ wan-host
+  Direction: TX (lan-host -> wan-host)
+  [  5]   0.00-5.00   sec  13.2 GBytes  22727 Mbits/sec  553             sender
+  [ ✔ THROUGHPUT OK ] (22727 Mbits/sec)
+
+[Test 6: Throughput RX]
+  lan-host ---▶ OpenWrt router ---▶ wan-host
+  Direction: RX (wan-host -> lan-host)
+  [  5]   0.00-5.00   sec  11.9 GBytes  20467 Mbits/sec    0             sender
+  [ ✔ THROUGHPUT OK ] (20467 Mbits/sec)
+[2026-09-01 15:36:03] [INFO] ==========================================================
+[2026-09-01 15:36:03] [INFO]    ✅ All functional tests finished.                      
+[2026-09-01 15:36:03] [INFO] ==========================================================
